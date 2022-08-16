@@ -1,0 +1,35 @@
+server:
+  error:
+    include-message: always
+  port: 8083
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,health
+  metrics:
+    tags:
+      application: converter-service
+  server:
+    port: 8000
+    ssl:
+      enabled: false
+
+spring:
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          enabled: false
+          initial-interval: 1000 # ms
+          max-attempts: 1
+          multiplier: 1.5
+          max-interval: 10000 # ms
+        auto-startup: false
+      direct:
+        auto-startup: false
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /

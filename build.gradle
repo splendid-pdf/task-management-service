@@ -1,0 +1,44 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'jacoco'
+}
+
+group 'ru.splendidpdf'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = 17
+    targetCompatibility = 17
+    options.annotationProcessorPath = configurations.annotationProcessor
+}
+
+ext {
+    set('lombokVersion', "1.18.24")
+    set('jacksonVersion', '2.13.3')
+}
+
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}",
+    "org.springframework.boot:spring-boot-configuration-processor"
+
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
