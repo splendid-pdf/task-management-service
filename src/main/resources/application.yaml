@@ -9,13 +9,18 @@ management:
         include: prometheus,health
   metrics:
     tags:
-      application: converter-service
+      application: ${spring.application.name}
   server:
     port: 8000
     ssl:
       enabled: false
 
 spring:
+  application:
+    name: task-management-service
+  redis:
+    host: localhost
+    port: 6379
   rabbitmq:
     listener:
       simple:
@@ -33,3 +38,45 @@ spring:
     username: guest
     password: guest
     virtual-host: /
+
+app:
+  mq:
+    exchanges:
+      tasks-exchange: exchange.tasks
+    queues:
+      task-status-change-queue: queue.task-status-change
+      image-conversion-queue: queue.image-conversion
+      image-resizing-queue: queue.image-resizing
+      image-editing-queue: queue.image-editing
+      document-conversion-queue: queue.document-conversion
+      document-resizing-queue: queue.document-resizing
+      document-editing-queue: queue.document-editing
+    routing-keys:
+      image-conversion-key: key.image-conversion
+      image-resizing-key: key.image-resizing
+      image-editing-key: key.image-editing
+      document-conversion-key: key.document-conversion
+      document-resizing-key: key.document-resizing
+      document-editing-key: key.document-editing
+  validation:
+    max-image-file-size: 10240 #Kb
+    max-document-file-size: 20480 #Kb
+  docs:
+    title: Task Management Service
+    description: Creates a taskId to track user task status
+    version: 1.0.0
+    server:
+      url: https://splendid-pdf.ru
+      description: Development server
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    org: INFO
+
+
