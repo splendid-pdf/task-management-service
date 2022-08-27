@@ -2,6 +2,7 @@ package ru.splendidpdf.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -26,6 +27,13 @@ public class RabbitMqConfig {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(jacksonMessageConverter());
         return rabbitTemplate;
+    }
+
+    @Bean
+    public SimpleRabbitListenerContainerFactory consumerBatchContainerFactory() {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        return factory;
     }
 
     @Bean("tasks-exchange")

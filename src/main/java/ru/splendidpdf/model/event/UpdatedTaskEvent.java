@@ -6,5 +6,6 @@ import ru.splendidpdf.model.TaskStatus;
 @Value
 public class UpdatedTaskEvent {
     String taskId;
+    String resultUrl;
     TaskStatus taskStatus;
 }

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.splendidpdf.api.dto.TaskInfoDto;
 import ru.splendidpdf.model.ImageFormat;
 import ru.splendidpdf.model.TaskStatus;
 import ru.splendidpdf.service.TaskService;
@@ -38,9 +39,9 @@ public class TaskController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{taskId}/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public TaskStatus createConversionTask(@PathVariable("taskId") String taskId) {
-        log.info("Received a request to get a task status by id {}", taskId);
-        return taskService.getTaskStatusById(taskId);
+    @GetMapping(value = "/{taskId}/info", produces = MediaType.APPLICATION_JSON_VALUE)
+    public TaskInfoDto getTaskInfo(@PathVariable("taskId") String taskId) {
+        log.info("Received a request to get a task info by id {}", taskId);
+        return taskService.getTaskInfoById(taskId);
     }
 }

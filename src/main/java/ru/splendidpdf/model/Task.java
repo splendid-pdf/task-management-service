@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @RedisHash("Task")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,22 +19,10 @@ public class Task {
     @Id
     private String id;
     private String fileName;
+    private String resultUrl;
     private FileType fileType;
     private TaskType taskType;
     private TaskStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-
-    @SneakyThrows
-    public static Task createNewTask(MultipartFile file, FileType fileType, TaskType taskType) {
-        return new Task(
-                UUID.randomUUID().toString(),
-                file.getOriginalFilename(),
-                fileType,
-                taskType,
-                TaskStatus.CREATED,
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        );
-    }
 }
