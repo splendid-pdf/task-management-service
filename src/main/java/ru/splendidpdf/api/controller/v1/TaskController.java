@@ -1,5 +1,6 @@
 package ru.splendidpdf.api.controller.v1;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,8 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.splendidpdf.api.dto.TaskInfoDto;
+import ru.splendidpdf.model.CompressionType;
 import ru.splendidpdf.model.ImageFormat;
-import ru.splendidpdf.model.TaskStatus;
 import ru.splendidpdf.service.TaskService;
 
 
@@ -20,12 +22,13 @@ import ru.splendidpdf.service.TaskService;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Task Controller")
-@RequestMapping("public/api/v1/tasks")
+@RequestMapping("${app.endpoints.tasks-url}")
 @ApiResponses(value = @ApiResponse(responseCode = "400", description = "Bad request", content = @Content))
 public class TaskController {
     private final TaskService taskService;
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Convert image")
     @PostMapping(value = "/conversion/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String createImageConversionTask(
             @RequestPart("image") MultipartFile image,
@@ -37,10 +40,21 @@ public class TaskController {
                 EnumUtils.getEnumIgnoreCase(ImageFormat.class, to));
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Compress image")
+    @PostMapping(value = "/compression/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String createImageCompressionTask(
+            @RequestPart("image") MultipartFile image,
+            @RequestParam("compression-type") String compressionType) {
+        return taskService.createImageCompressionTask(image,
+                EnumUtils.getEnumIgnoreCase(CompressionType.class, compressionType));
+    }
+
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{taskId}/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public TaskStatus createConversionTask(@PathVariable("taskId") String taskId) {
-        log.info("Received a request to get a task status by id {}", taskId);
-        return taskService.getTaskStatusById(taskId);
+    @Operation(summary = "Track task status by taskId")
+    @GetMapping(value = "/{taskId}/info", produces = MediaType.APPLICATION_JSON_VALUE)
+    public TaskInfoDto getTaskInfo(@PathVariable("taskId") String taskId) {
+        log.info("Received a request to get a task info by id {}", taskId);
+        return taskService.getTaskInfoById(taskId);
     }
 }

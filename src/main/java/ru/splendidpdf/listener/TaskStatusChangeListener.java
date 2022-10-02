@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.data.mapping.MappingException;
 import org.springframework.stereotype.Component;
-import ru.splendidpdf.model.event.UpdatedTaskEvent;
+import ru.splendidpdf.event.UpdatedTaskEvent;
 import ru.splendidpdf.service.TaskService;
 
 @Slf4j
@@ -19,14 +19,16 @@ public class TaskStatusChangeListener {
     private final TaskService taskService;
     private final ObjectMapper objectMapper;
 
-    @RabbitListener(queues = "${app.mq.queues.task-status-change-queue}")
+    @RabbitListener(
+            queues = "${app.mq.queues.task-status-queue}",
+            containerFactory = "consumerBatchContainerFactory")
     public void updateTaskStatus(String message) {
         try {
             log.info("Get message to update task: {}", message);
             taskService.updateTask(objectMapper.readValue(message, UpdatedTaskEvent.class));
         } catch (JsonProcessingException e) {
             log.error(ERROR_MESSAGE);
-            throw new MappingException(ERROR_MESSAGE);
+            throw new AmqpRejectAndDontRequeueException(ERROR_MESSAGE);
         }
     }
 }

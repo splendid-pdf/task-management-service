@@ -23,22 +23,16 @@ public class MqProperties {
     @Getter
     @Setter
     public static class Queues {
-        private String imageConversionQueue;
-        private String imageResizingQueue;
-        private String imageEditingQueue;
-        private String documentConversionQueue;
-        private String documentResizingQueue;
-        private String documentEditingQueue;
+        private String imageServiceQueue;
+        private String documentServiceQueue;
+        private String activityServiceQueue;
     }
 
     @Getter
     @Setter
     public static class RoutingKeys {
-        private String imageConversionKey;
-        private String imageResizingKey;
-        private String imageEditingKey;
-        private String documentConversionKey;
-        private String documentResizingKey;
-        private String documentEditingKey;
+        private String imageServiceKey;
+        private String documentServiceKey;
+        private String activityServiceKey;
     }
 }
