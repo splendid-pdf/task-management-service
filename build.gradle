@@ -6,10 +6,14 @@ plugins {
 }
 
 group 'ru.splendidpdf'
-version '1.0-SNAPSHOT'
+version '0.0.1-SNAPSHOT'
 
-repositories {
-    mavenCentral()
+allprojects {
+    repositories {
+        mavenCentral()
+
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 compileJava {
@@ -25,6 +29,7 @@ ext {
     set("apacheCommonsVersion", "3.12.0")
     set("commonsIoVersion", "2.11.0")
     set("springCloudVersion", "2021.0.3")
+    set("splendidPdfCommonsVersion", "master")
 }
 
 dependencies {
@@ -37,6 +42,8 @@ dependencies {
 
     implementation("commons-io:commons-io:${commonsIoVersion}")
     implementation("org.apache.commons:commons-lang3:${apacheCommonsVersion}")
+    implementation("com.github.splendid-pdf:commons:${splendidPdfCommonsVersion}")
+
 
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}",
     "org.springframework.boot:spring-boot-configuration-processor"
@@ -46,7 +53,7 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

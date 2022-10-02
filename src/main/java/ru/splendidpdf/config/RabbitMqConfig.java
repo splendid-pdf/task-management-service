@@ -41,16 +41,16 @@ public class RabbitMqConfig {
         return new TopicExchange(properties.getExchanges().getTasksExchange());
     }
 
-    @Bean("image-conversion-queue")
-    public Queue queue() {
-        return new Queue(properties.getQueues().getImageConversionQueue());
+    @Bean("image-service-queue")
+    public Queue imageServiceQueue() {
+        return new Queue(properties.getQueues().getImageServiceQueue());
     }
 
-    @Bean("image-conversion-binding")
+    @Bean("image-service-binding")
     public Binding binding() {
         return BindingBuilder
-                .bind(queue())
+                .bind(imageServiceQueue())
                 .to(topicExchange())
-                .with(properties.getRoutingKeys().getImageConversionKey());
+                .with(properties.getRoutingKeys().getImageServiceKey());
     }
 }

@@ -10,8 +10,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.splendidpdf.event.UpdatedTaskEvent;
 import ru.splendidpdf.model.TaskStatus;
-import ru.splendidpdf.model.event.UpdatedTaskEvent;
 
 @Configuration
 public class AppConfig {
@@ -37,7 +37,11 @@ public class AppConfig {
             String taskId = node.get("taskId").asText();
             String resultUrl = node.get("resultUrl").asText();
             String taskStatus = node.get("taskStatus").asText();
-            return new UpdatedTaskEvent(taskId, resultUrl, Enum.valueOf(TaskStatus.class, taskStatus));
+            return UpdatedTaskEvent.builder()
+                    .taskId(taskId)
+                    .resultUrl(resultUrl)
+                    .taskStatus(Enum.valueOf(TaskStatus.class, taskStatus))
+                    .build();
         }
     }
 }

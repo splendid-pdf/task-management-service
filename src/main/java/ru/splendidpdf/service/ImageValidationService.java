@@ -7,27 +7,41 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.splendidpdf.config.properties.ValidationProperties;
 import ru.splendidpdf.exception.ValidationException;
+import ru.splendidpdf.model.CompressionType;
 import ru.splendidpdf.model.ImageFormat;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class ImageValidationService {
     private final ValidationProperties properties;
 
-    public void validateFileAndInputParams(MultipartFile image, ImageFormat from, ImageFormat to) {
-        validateInputParameters(from, to);
-        validateFile(image, from);
+    public void validateFileAndParametersForConversion(MultipartFile image, ImageFormat from, ImageFormat to) {
+        validateImageFormatInputParameters(from, to);
+        validateFileExtension(image, from);
+        validateFileSize(image.getSize());
     }
 
-    private void validateInputParameters(ImageFormat from, ImageFormat to) {
+    public void validateFileAndParametersForCompression(MultipartFile image, CompressionType compressionType) {
+        if (Objects.isNull(compressionType)) {
+            throw new ValidationException("Compression type must be presented");
+        }
+
+        validateFileSize(image.getSize());
+    }
+
+    private void validateImageFormatInputParameters(ImageFormat from, ImageFormat to) {
         if (ObjectUtils.anyNull(from, to)) {
             throw new ValidationException("Input parameters must be presented");
         }
+
+        if (Objects.equals(from, to)) {
+            throw new ValidationException("Input parameters must be different");
+        }
     }
 
-    private void validateFile(MultipartFile file, ImageFormat format) {
-        validateFileSize(file.getSize());
-
+    private void validateFileExtension(MultipartFile file, ImageFormat format) {
         if (!format.getKey().equals(FilenameUtils.getExtension(file.getOriginalFilename()))) {
             throw new ValidationException("Format of the file must be %s".formatted(format.getKey()));
         } else if (!format.getMediaType().equals(file.getContentType())) {

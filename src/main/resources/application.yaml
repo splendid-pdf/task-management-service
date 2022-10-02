@@ -1,7 +1,7 @@
 server:
   error:
     include-message: always
-  port: 8083
+  port: 8080
 management:
   endpoints:
     web:
@@ -19,7 +19,7 @@ spring:
   application:
     name: task-management-service
   redis:
-    host: localhost
+    host: 127.0.0.1
     port: 6379
   rabbitmq:
     listener:
@@ -40,24 +40,20 @@ spring:
     virtual-host: /
 
 app:
+  endpoints:
+    tasks-url: public/api/v1/tasks
   mq:
     exchanges:
       tasks-exchange: exchange.tasks
     queues:
-      task-status-change-queue: queue.task-status-change
-      image-conversion-queue: queue.image-conversion
-      image-resizing-queue: queue.image-resizing
-      image-editing-queue: queue.image-editing
-      document-conversion-queue: queue.document-conversion
-      document-resizing-queue: queue.document-resizing
-      document-editing-queue: queue.document-editing
+      task-status-queue: queue.task-status
+      image-service-queue: queue.image-service
+      document-service-queue: queue.document-service
+      activity-service-queue: queue.activity-service
     routing-keys:
-      image-conversion-key: key.image-conversion
-      image-resizing-key: key.image-resizing
-      image-editing-key: key.image-editing
-      document-conversion-key: key.document-conversion
-      document-resizing-key: key.document-resizing
-      document-editing-key: key.document-editing
+      image-service-key: key.tasks.image-service
+      document-service-key: key.tasks.document-service
+      activity-service-key: key.tasks.#
   validation:
     max-image-file-size: 10240 #Kb
     max-document-file-size: 20480 #Kb

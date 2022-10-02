@@ -1,7 +1,6 @@
 package ru.splendidpdf.api;
 
 import lombok.Builder;
-import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -19,21 +18,15 @@ public class GlobalExceptionHandler {
         return ErrorInfo.createErrorInfo(exception);
     }
 
-    @Value
-    @Builder
-    private static class ErrorInfo {
-        UUID errorId;
-        String message;
-        String timestamp;
-        Throwable cause;
-
-        static ErrorInfo createErrorInfo(RuntimeException exception) {
-            return ErrorInfo.builder()
-                    .errorId(UUID.randomUUID())
-                    .cause(exception.getCause())
-                    .message(exception.getMessage())
-                    .timestamp(LocalDateTime.now().toString())
-                    .build();
+        @Builder
+        private record ErrorInfo(UUID errorId, String message, String timestamp, Throwable cause) {
+            static ErrorInfo createErrorInfo(RuntimeException exception) {
+                return ErrorInfo.builder()
+                        .errorId(UUID.randomUUID())
+                        .cause(exception.getCause())
+                        .message(exception.getMessage())
+                        .timestamp(LocalDateTime.now().toString())
+                        .build();
+            }
         }
-    }
 }
